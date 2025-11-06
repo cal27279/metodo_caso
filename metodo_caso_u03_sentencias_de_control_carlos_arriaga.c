@@ -1,4 +1,4 @@
-// Incluye la biblioteca estándar de entrada/salida (solo se necesita una vez)
+// Incluye la biblioteca estándar de entrada/salida
 #include <stdio.h>
 
 // Declaración de prototipos de funciones para modularizar los bloques de código
