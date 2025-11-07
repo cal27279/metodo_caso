@@ -1,0 +1,134 @@
+/*
+ * PROGRAMA: Gestión de Casino
+ * OBJETIVO: "Evidencia" del Método Caso.
+ *
+ * FUNCIONALIDAD:
+ * 1. Define un registro (struct) para almacenar máquinas.
+ * 2. Permite al usuario definir cuántas máquinas inicializar (máx. 5).
+ * 3. Usa funciones para:
+ * - initializeMachines: Pide los nombres y pone contadores a 0.
+ * - registerUsage: Incrementa el uso y suma las ganancias de una máquina.
+ * - displayUsageAndEarnings: Muestra el reporte final.
+ * 4. Está documentado y comentado como buena práctica.
+ */
+
+#include <stdio.h>    // Para funciones de entrada y salida (printf, scanf, fgets)
+#include <string.h>   // Para funciones de cadenas (strcmp, strcspn)
+
+// --- Constantes (Declaración de constantes) ---
+#define MAX_MACHINES 5    // Número máximo de máquinas
+#define MAX_NAME_LENGTH 50 // Longitud máxima del nombre
+
+/*
+ * --- Tipos de Datos Estructurados (Registros)  ---
+ * Define la estructura "Machine" para agrupar los datos de una máquina.
+ */
+struct Machine { 
+    char name[MAX_NAME_LENGTH]; 
+    int usageFrequency; 
+    float totalEarnings; 
+};
+
+/*
+ * Función: initializeMachines
+ * Propósito: Pide al usuario el nombre de cada máquina y
+ * establece sus contadores iniciales en 0.
+ */
+void initializeMachines(struct Machine machines[], int size) {
+    
+    // Limpia el buffer de entrada (el 'Enter' después de scanf)
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
+    // --- Sentencia de Control (for)---
+    for (int i = 0; i < size; i++) {
+        printf("Ingrese el nombre de la máquina %d: ", i + 1);
+        
+        // Se usa fgets para leer nombres con espacios de forma segura
+        fgets(machines[i].name, MAX_NAME_LENGTH, stdin);
+        
+        // Elimina el salto de línea ('\n') que fgets captura
+        machines[i].name[strcspn(machines[i].name, "\n")] = 0;
+
+        // Inicializa los valores numéricos
+        machines[i].usageFrequency = 0; 
+        machines[i].totalEarnings = 0.0;
+    }
+}
+
+/*
+ * Función: registerUsage
+ * Propósito: Busca una máquina por su nombre y, si la encuentra,
+ * incrementa su contador de uso y suma las ganancias.
+ */
+void registerUsage(struct Machine machines[], int size, const char *machineName, float earnings) { 
+    
+    // --- Sentencia de Control (for) ---
+    for (int i = 0; i < size; i++) {
+        
+        // --- Sentencia de Control (if)  ---
+        // Compara el nombre de la máquina actual con el nombre buscado
+        if (strcmp(machines[i].name, machineName) == 0) {
+            machines[i].usageFrequency++;
+            machines[i].totalEarnings += earnings;
+            break; // Termina el bucle 'for' una vez encontrada la máquina
+        }
+    }
+}
+
+/*
+ * Función: displayUsageAndEarnings
+ * Propósito: Muestra un reporte en consola con los datos
+ * actuales de todas las máquinas.
+ */
+void displayUsageAndEarnings(const struct Machine machines[], int size) {
+    printf("\n--- Reporte de Uso y Ganancias del Casino ---\n");
+    
+    // --- Sentencia de Control (for)  ---
+    for (int i = 0; i < size; i++) { 
+        printf("Máquina: %s, Frecuencia de uso: %d, Ganancias totales: %.2f\n", 
+               machines[i].name, 
+               machines[i].usageFrequency, 
+               machines[i].totalEarnings);
+    }
+}
+
+/*
+ * --- Función Principal (main) ---
+ * Punto de entrada del programa.
+ */
+int main() {
+    // --- Declaración de Variables  ---
+    struct Machine machines[MAX_MACHINES];
+    int numMachines; // Variable para guardar la entrada del usuario
+
+    printf("Gestión de Casino - Inicialización del Sistema\n");
+    printf("Ingrese el número de máquinas a registrar (máximo %d): ", MAX_MACHINES);
+    scanf("%d", &numMachines);
+
+    // --- Sentencia de Control (if-else)  ---
+    // Validación de la entrada del usuario
+    if (numMachines <= 0 || numMachines > MAX_MACHINES) {
+        printf("Error: El número de máquinas debe estar entre 1 y %d.\n", MAX_MACHINES);
+        return 1; // Termina el programa con un código de error
+    }
+    
+    // --- Llamada a Funciones ---
+    
+    // 1. Inicializar las máquinas
+    initializeMachines(machines, numMachines);
+
+    // 2. Simulación de uso (esto puede ser modificado)
+    printf("\n...Simulando uso de máquinas...\n");
+    registerUsage(machines, numMachines, "Tragamonedas1", 100.50); 
+    registerUsage(machines, numMachines, "Ruleta", 200.75);
+    registerUsage(machines, numMachines, "Tragamonedas1", 150.25);
+    // Nota: Si ingresas nombres diferentes (ej. "Poker"), esta simulación
+    // no los encontrará. Debes cambiar "Tragamonedas1" y "Ruleta"
+    // por los nombres que TÚ vayas a ingresar durante la prueba.
+
+    // 3. Mostrar el reporte final
+    displayUsageAndEarnings(machines, numMachines);
+
+    return 0; // Termina el programa sin errores 
+}
